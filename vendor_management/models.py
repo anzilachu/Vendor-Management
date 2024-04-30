@@ -57,6 +57,10 @@ class PurchaseOrder(models.Model):
     issue_date = models.DateTimeField(auto_now_add=True)
     acknowledgment_date = models.DateTimeField(blank=True, null=True)
 
+    def __str__(self):
+        return self.po_number  # Updated to return po_number instead of default string
+
+
 class HistoricalPerformance(models.Model):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     date = models.DateTimeField()
@@ -64,6 +68,10 @@ class HistoricalPerformance(models.Model):
     quality_rating_avg = models.FloatField()
     average_response_time = models.FloatField()
     fulfillment_rate = models.FloatField()
+
+    def __str__(self):
+        return f"{self.vendor.name} - {self.date.strftime('%Y-%m-%dT%H:%M:%SZ')}"
+
 
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
