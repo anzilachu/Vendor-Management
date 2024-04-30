@@ -6,7 +6,7 @@ This is a Vendor Management System built using Django and Django REST Framework.
 
 SetUp :-
 
-1. git clone https://github.com/your-username/vendor-management-system.git
+1. git clone https://github.com/anzilachu/Vendor-Management
 
 2. cd vendor_management_system
 
@@ -59,3 +59,11 @@ API Endpoints :-
     Endpoint: /api/purchase_orders/{po_id}/acknowledge/
     Method: POST
     Description: Acknowledge a purchase order and trigger recalculation of metrics.
+
+
+
+
+API Testing
+
+1. Use Postman or cURL to test the API endpoints.
+2. Authenticate with the obtained token in the Authorization header for authenticated endpoints.
