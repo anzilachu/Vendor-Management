@@ -12,10 +12,9 @@ class Vendor(models.Model):
     fulfillment_rate = models.FloatField(validators=[MinValueValidator(0), MaxValueValidator(100)])
 
     def calculate_metrics(self):
-        # Calculate and update performance metrics for the vendor
+    
         completed_orders = self.purchaseorder_set.filter(status='completed', quality_rating__isnull=False)
 
-        # Calculate On-Time Delivery Rate
         completed_orders_count = completed_orders.count()
         if completed_orders_count > 0:
             on_time_delivery_orders_count = completed_orders.filter(delivery_date__lte=models.F('acknowledgment_date')).count()
@@ -23,11 +22,9 @@ class Vendor(models.Model):
         else:
             self.on_time_delivery_rate = 0
 
-        # Calculate Quality Rating Average
         quality_rating_avg = completed_orders.aggregate(avg_rating=models.Avg('quality_rating'))['avg_rating']
         self.quality_rating_avg = quality_rating_avg or 0
 
-        # Calculate Response Time Average
         response_times = completed_orders.exclude(acknowledgment_date__isnull=True).annotate(
             response_time=models.ExpressionWrapper(models.F('acknowledgment_date') - models.F('issue_date'),
                                                    output_field=models.DurationField())
@@ -35,7 +32,6 @@ class Vendor(models.Model):
         response_time_avg = response_times.aggregate(avg_response=models.Avg('response_time'))['avg_response']
         self.response_time_avg = response_time_avg.total_seconds() if response_time_avg else 0
 
-        # Calculate Fulfillment Rate
         fulfilled_orders_count = completed_orders.count()
         if fulfilled_orders_count > 0:
             self.fulfillment_rate = (fulfilled_orders_count / completed_orders_count) * 100
@@ -75,6 +71,3 @@ from django.contrib.auth.models import User
 class CustomToken(models.Model):
     token = models.OneToOneField(Token, on_delete=models.CASCADE)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    # Add your additional fields here
-    # For example:
-    # custom_field = models.CharField(max_length=100)
