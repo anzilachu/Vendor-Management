@@ -63,7 +63,13 @@ API Endpoints :-
 
 
 
+Testing
+
+    python manage.py test vendor_management.tests.test_models vendor_management.tests.test_views
+        occur testing of both models and views
+        
+
 API Testing
 
-1. Use Postman or cURL to test the API endpoints.
-2. Authenticate with the obtained token in the Authorization header for authenticated endpoints.
+    1. Use Postman or cURL to test the API endpoints.
+    2. Authenticate with the obtained token in the Authorization header for authenticated endpoints.
