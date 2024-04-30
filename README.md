@@ -6,15 +6,15 @@ This is a Vendor Management System built using Django and Django REST Framework.
 
 SetUp :-
 
-1. git clone https://github.com/anzilachu/Vendor-Management
-
-2. cd vendor_management_system
-
-3. pip install -r requirements.txt
-
-4. python manage.py migrate
-
-5. python manage.py runserver
+    git clone https://github.com/anzilachu/Vendor-Management
+    
+    cd vendor_management_system
+    
+    pip install -r requirements.txt
+    
+    python manage.py migrate
+    
+    python manage.py runserver
 
 
 
@@ -64,12 +64,13 @@ API Endpoints :-
 
 
 Testing
+    occur testing of both models and views
 
     python manage.py test vendor_management.tests.test_models vendor_management.tests.test_views
-        occur testing of both models and views
+    
         
 
 API Testing
 
-    1. Use Postman or cURL to test the API endpoints.
-    2. Authenticate with the obtained token in the Authorization header for authenticated endpoints.
+1. Use Postman or cURL to test the API endpoints.
+2. Authenticate with the obtained token in the Authorization header for authenticated endpoints.
