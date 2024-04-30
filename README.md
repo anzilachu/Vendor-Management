@@ -64,7 +64,8 @@ API Endpoints :-
 
 
 Testing
-    occur testing of both models and views
+
+occur testing of both models and views
 
     python manage.py test vendor_management.tests.test_models vendor_management.tests.test_views
     
