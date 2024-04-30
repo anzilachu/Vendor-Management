@@ -10,13 +10,16 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['username', 'password']
         extra_kwargs = {'password': {'write_only': True}}
 
+
 class TokenSerializer(serializers.Serializer):
     key = serializers.CharField()
+
 
 class VendorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vendor
         fields = '__all__'
+
 
 class PurchaseOrderSerializer(serializers.ModelSerializer):
     class Meta:
