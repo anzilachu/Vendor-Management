@@ -9,7 +9,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
+
 from django.contrib.auth.models import User
 
 
@@ -25,14 +25,14 @@ class UserLoginAPIView(APIView):
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
-
+        
+        # Check if the username and password match
         user = User.objects.filter(username=username, password=password).first()
-
+        
         if user:
-            token = RefreshToken.for_user(user)
-            access_token = str(token.access_token)
-            refresh_token = str(token)
-            return Response({'access_token': access_token, 'refresh_token': refresh_token}, status=status.HTTP_200_OK)
+            # Get the token for the user (assuming one token per user)
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({'token': token.key}, status=status.HTTP_200_OK)  # Return the token key
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -49,20 +49,11 @@ class VendorListCreateAPIView(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-
 class VendorRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response({'message': 'Vendor deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
-
-    def perform_destroy(self, instance):
-        instance.delete()
 
 class PurchaseOrderListCreateAPIView(generics.ListCreateAPIView):
     queryset = PurchaseOrder.objects.all()
@@ -86,7 +77,8 @@ class PurchaseOrderRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAP
 
     def perform_update(self, serializer):
         instance = serializer.save()
-        instance.vendor.calculate_metrics()  
+        # Trigger calculation of metrics when a PO is updated
+        instance.vendor.calculate_metrics()  # Assuming calculate_metrics is a method in Vendor model
 
 
 class VendorPerformanceAPIView(generics.RetrieveAPIView):
@@ -109,7 +101,7 @@ class VendorPerformanceAPIView(generics.RetrieveAPIView):
         return Response(performance_metrics)
     
 
-from django.utils import timezone 
+from django.utils import timezone  # Import timezone from django.utils
 
 class AcknowledgePurchaseOrderAPIView(generics.UpdateAPIView):
     queryset = PurchaseOrder.objects.all()
@@ -121,7 +113,7 @@ class AcknowledgePurchaseOrderAPIView(generics.UpdateAPIView):
         instance = self.get_object()
         instance.acknowledgment_date = timezone.now()
         instance.save()
-        instance.vendor.calculate_metrics() 
+        instance.vendor.calculate_metrics()  # Assuming you have implemented this method
         return Response({'message': 'Purchase Order acknowledged successfully.'})
 
     def post(self, request, *args, **kwargs):
